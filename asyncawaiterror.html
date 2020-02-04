@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Err:Async</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script>
+    function wait(ms = 0) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+      })
+    }
+
+    function makePizza(toppings = []) {
+      //Also possible to return immediately
+      return new Promise(function (resolve, reject) {
+        //if wrong, reject promise
+        if (toppings.includes('pineapple')) {
+          reject('Get out pineapple !')
+        }
+        //when ready, resolve promise
+        const amountOfTime = 500 + (toppings.length * 1000)
+        //wait 1sec for the pizza to cook
+        setTimeout(function () {
+          resolve(`Here is your pizza with the toppings ${toppings.join(' ')}`)
+        }, amountOfTime);
+      });
+    }
+
+    //First way of sorting errors
+    // async function go() {
+    //   try {
+    //     const pizza = await makePizza(['pineapple']);
+    //   } catch (err) {
+    //     console.log('Oh nooo!');
+    //     console.log(err);
+    //   }
+    // }
+    // go();
+
+    //Second way
+    // function handleError(err) {
+    //   console.log('Oh nooo!');
+    //   console.log(err);
+    // }
+    // async function go() {
+    //   const pizza = await makePizza(['pineapple']).catch(handleError);
+    //   console.log(pizza);
+    // }
+    // go();
+
+    //Third & BEST way
+    function handleError(err) {
+      console.warn('Oh no, that\'s an error!');
+      console.error(err);
+    }
+    async function go() {
+      const pizza = await makePizza(['ham', 'pineapple']);
+      console.log(pizza);
+    }
+    //Option 1 : catch it at run time
+    go().catch(handleError);
+    //Option 2 : make a safe function with a High Order Function
+    function makeSafe(fn, errorHandler) {
+      return function () {
+        fn().catch(errorHandler)
+      }
+    }
+    const safeGo = makeSafe(go, handleError);
+    safeGo();
+
+
+
+  </script>
+
+</body>
+
+</html>

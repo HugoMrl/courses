@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajax APIs</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <p class="user">loading...</p>
+
+  <script>
+    const baseEndpoint = 'https://api.github.com';
+    const userEndpoint = `${baseEndpoint}/users`;
+    const userElement = document.querySelector('.user');
+
+    async function displayName(username) {
+      const response = await fetch(`${userEndpoint}/${username}`);
+      console.log(response);
+      const data = await response.json();
+      console.log(data);
+      userElement.textContent = `${data.name} - ${data.blog}`;
+    }
+
+    function handleError(err) {
+      console.log("Oh Noo ! There's an error :");
+      console.log(err);
+      userElement.textContent = `Something went wrong: ${err}`;
+    }
+
+    displayName('hugomrl');
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Async</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script>
+    function wait(ms = 0) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+      })
+    }
+
+    function makePizza(toppings = []) {
+      //Also possible to return immediately
+      return new Promise(function (resolve, reject) {
+        //if wrong, reject promise
+        if (toppings.includes('pineapple')) {
+          reject('Get out pineapple !')
+        }
+        //when ready, resolve promise
+        const amountOfTime = 500 + (toppings.length * 1000)
+        //wait 1sec for the pizza to cook
+        setTimeout(function () {
+          resolve(`Here is your pizza with the toppings ${toppings.join(' ')}`)
+        }, amountOfTime);
+      });
+    }
+
+    async function makeDinner() {
+      //Sequential function, doesn't start pizza2 unless pizza1 is done
+      // const pizza1 = await makePizza(['pepperoni']);
+      // console.log(pizza1);
+      // const pizza2 = await makePizza(['mushroom']);
+      // console.log(pizza2);
+
+      //Parallel function, run all simultaneously
+      const pizzaPromise1 = makePizza(['pepperoni']);
+      const pizzaPromise2 = makePizza(['mushroom']);
+      // const allPromise = await Promise.all([pizzaPromise1, pizzaPromise2]);
+      // console.log(allPromise);
+      const [pep, mush] = await Promise.all([pizzaPromise1, pizzaPromise2]);
+      console.log(pep, mush);
+    }
+
+    makeDinner();
+
+
+
+
+
+
+
+
+    // //Function declaration
+    // async function fd() { }
+
+    // //Arrow function
+    // const arrowFn = async () => { }
+
+    // //Callback function
+    // window.addEventListener('click', async function () { })
+
+    // //Methods
+    // const person = {
+    //   sayHi: async function () {
+
+    //   },
+    //   //Method shorthand
+    //   async sayHello() {
+
+    //   },
+    //   //function property
+    //   sayHey: async () => {
+
+    //   }
+    // }
+  </script>
+
+</body>
+
+</html>

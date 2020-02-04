@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promises</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <script>
+    function makePizza(toppings = []) {
+      //Also possible to return immediately
+      const pizzaPromise = new Promise(function (resolve, reject) {
+        //if wrong, reject promise
+        if (toppings.includes('pineapple')) {
+          reject('Get out pineapple !')
+        }
+        //when ready, resolve promise
+        const amountOfTime = 500 + (toppings.length * 1000)
+        //wait 1sec for the pizza to cook
+        setTimeout(function () {
+          resolve(`Here is your pizza with the toppings ${toppings.join(' ')}`)
+        }, amountOfTime);
+      });
+      return pizzaPromise;
+    }
+
+    makePizza(['pepperoni', 'pineappl'])
+      .then(function (pizza) {
+        console.log(pizza);
+        return makePizza(['ham'])
+      })
+      .then(function (pizza) {
+        console.log(pizza);
+        return makePizza(['ham', 'pineapple', 'ham', 'ham'])
+      })
+      .then(function (pizza) {
+        console.log(pizza);
+      })
+      .catch(err => handleError(err))
+
+    function handleError(err) {
+      console.log('Oh noooo !!');
+      console.log(err);
+    }
+
+    // const pepperoniPizza = makePizza(['pepperoni']);
+    // const reinePizza = makePizza(['pepperoni', 'onion', 'mushrooms']);
+
+    // pepperoniPizza.then(function (pizza) {
+    //   console.log('ahhh, got it');
+    //   console.log(pizza);
+    // })
+  </script>
+
+</body>
+
+</html>
